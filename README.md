@@ -1,6 +1,6 @@
+Anticheat System by Skippi
 ========================================================
 If somebody wants to help me to test anticheat - i have no server to test this plugin on. Test it yourself =)
-========================================================
 
 Features:
 
