@@ -10,7 +10,7 @@ function ErrorFound(err, str){
 	var Send = ini.GetSetting("SendToSkippi","Enable");
 	if (Send == 1){
 		var Script = ini.GetSetting("SendToSkippi","Script");
-		Web.GET(Script+"?type=error&message="+err.message+"&function="+str+"&description="+err.description);/**/
+		Web.GET(Script+"?type=error&message="+err.message+"&function="+str+"&description="+err.description+"&line="+err.lineNumber);/**/
 	}
 }
 
@@ -599,7 +599,7 @@ function startWorkCallback() {
 			Data.AddTableValue('lastCoords', "last "+pl.Name+" location", pl.Location);
 		}
 		Plugin.CreateTimer("stopWork", WorkMins*60000).Start();
-		Plugin.KillTimer("startWort");
+		Plugin.KillTimer("startWork");
 	}
 	catch (err) {
             ErrorFound(err, "startWorkCallback");
