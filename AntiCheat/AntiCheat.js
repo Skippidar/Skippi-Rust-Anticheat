@@ -8,6 +8,7 @@ function ErrorFound(err, str){
 	var ini = Plugin.GetIni("AntiCheatSettings");
 	var LogErrors = ini.GetSetting("LogErrors","Enable");
 	if (LogErrors == 1){
+	/*
 		var Date = Plugin.GetDate();
 		var Time = Plugin.GetTime();
 		var iniError = Plugin.GetIni("ErrorLog");
