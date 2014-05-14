@@ -2,6 +2,7 @@
 Anticheat system made by Skippi ( http://vk.com/skippi_dar ). You can thank me if you want =) 
 Download all new versions here: http://gomagma.org/community/index.php?resources/anticheat-system-by-skippi.24/
 If you want - you can rate this plugin on http://gomagma.org
+GitHub - https://github.com/Skippidar/Skippi-Rust-Anticheat/blob/master/AntiCheat/AntiCheat.js
 */
 
 function ErrorFound(err, str){
