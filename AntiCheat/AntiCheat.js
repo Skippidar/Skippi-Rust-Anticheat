@@ -7,16 +7,10 @@ GitHub - https://github.com/Skippidar/Skippi-Rust-Anticheat/blob/master/AntiChea
 
 function ErrorFound(err, str){
 	var ini = Plugin.GetIni("AntiCheatSettings");
-	var LogErrors = ini.GetSetting("LogErrors","Enable");
-	if (LogErrors == 1){
-	/*
-		var Date = Plugin.GetDate();
-		var Time = Plugin.GetTime();
-		var iniError = Plugin.GetIni("ErrorLog");
-		iniError.AddSetting("Errors", "1", "Error in function " + str);
-		iniError.AddSetting("Errors", "2", "Exception Message: " + err.message);
-		iniError.AddSetting("Errors", "3", "Exception Description: " + err.description);
-		iniError.Save();/**/
+	var Send = ini.GetSetting("SendToSkippi","Enable");
+	if (Send == 1){
+		var Script = ini.GetSetting("SendToSkippi","Script");
+		Web.GET(Script+"?type=error&message="+err.message+"&function="+str+"&description="+err.description);/**/
 	}
 }
 
@@ -56,6 +50,13 @@ function banCheater(Player, LogString) {
 		iniBansID.Save();
 		Player.MessageFrom("[AntiCheat]", "[color#FF2222]You have been banned.");
 		Player.Disconnect();
+		var ini = Plugin.GetIni("AntiCheatSettings");
+		var Send = ini.GetSetting("SendToSkippi","Enable");
+		if (Send == 1){
+			var Script = ini.GetSetting("SendToSkippi","Script");
+			var Link = Script+"?type=ban&ban_ip="+Player.IP+"&ban_id="+Player.SteamID+"&reason="+LogString;
+			var Answer = Web.GET(Link);/**/
+		}
 	}
 	catch (err) {
             ErrorFound(err, "banCheater");
