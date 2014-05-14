@@ -5,12 +5,14 @@ If you want - you can rate this plugin on http://gomagma.org
 GitHub - https://github.com/Skippidar/Skippi-Rust-Anticheat/blob/master/AntiCheat/AntiCheat.js
 */
 
+var Version = "4.7.2.2";
+
 function ErrorFound(err, str){
 	var ini = Plugin.GetIni("AntiCheatSettings");
 	var Send = ini.GetSetting("SendToSkippi","Enable");
 	if (Send == 1){
 		var Script = ini.GetSetting("SendToSkippi","Script");
-		Web.GET(Script+"?type=error&message="+err.message+"&function="+str+"&description="+err.description+"&line="+err.lineNumber);/**/
+		Web.GET(Script+"?type=error&message="+err.message+"&function="+str+"&description="+err.description+"&line="+err.lineNumber+"&version="+Version);/**/
 	}
 }
 
@@ -470,13 +472,19 @@ function On_PlayerKilled(DeathEvent){
 		var MaxKillDist = ini.GetSetting("AntiAim","MaxKillDistance");
 		if ((Message == 1) || (AntiAim == 1)){
 			var Killer = DeathEvent.Attacker.Name;
+			var pl = Server.FindPlayer(Killer);
+			if(pl.Name == undefined){
+				return;
+			}
+			else {
+				var Dist = Util.GetVectorsDistance(DeathEvent.Attacker.Location, DeathEvent.Victim.Location);
+				var Distance = Number(Dist).toFixed(2);
+			}
 			var Victim = DeathEvent.Victim.Name;
 			var Weapon = DeathEvent.WeaponName; 
 			var DamageType = DeathEvent.DamageType;
 			var BodyPart = DeathEvent.DamageEvent.bodyPart;
 			var Damage = Math.round(DeathEvent.DamageAmount);
-			var Dist = Util.GetVectorsDistance(DeathEvent.Attacker.Location, DeathEvent.Victim.Location);
-			var Distance = Number(Dist).toFixed(2);
 		}
 		if ((Message == 1) && (Victim != Killer)){
 			//var LogToFile = ini.GetSetting("DeathMessage","LogToFile");
