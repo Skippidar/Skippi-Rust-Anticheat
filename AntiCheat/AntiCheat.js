@@ -2,21 +2,134 @@
 Anticheat system made by Skippi ( http://vk.com/skippi_dar ). You can thank me if you want =) 
 Download all new versions here: http://gomagma.org/community/index.php?resources/anticheat-system-by-skippi.24/
 If you want - you can rate this plugin on http://gomagma.org
-GitHub - https://github.com/Skippidar/Skippi-Rust-Anticheat/blob/master/AntiCheat/AntiCheat.js
+GitHub - https://github.com/Skippidar/Skippi-Rust-Anticheat
 */
 
-var Version = "4.7.2.2";
+var Version = "4.7.3";
+var ini = "";
+var Chat = "";
+var Kick = "";
+var Ban = "";
+var Tp = "";
+var ChatDist = "";
+var KickDist = "";
+var BanDist = "";
+var TpDist = "";
+var AdminCheck = "";
+var Send = "";
+var Script = "";
+var Voteban = "";
+var MinOnline = "";
+var SecsToVote = "";
+var AntiSH = "";
+var timer = "";
+var TempWork = "";
+var HighPing = "";
+var WorkMins = "";
+var CountAim = "";
+var AntiFlyHack = "";
+var TimeFlyCheck = "";
+var CountFly = "";
+var Whitelist = "";
+var APIKey = "";
+var AllowShared = "";
+var AllowVACBanned = "";
+var AllowedVACBans = "";
+var MaximumDays = "";
+var LogPlayers = "";
+var NamesRestrict = "";
+var allowed = "";
+var MaxLength = "";
+var MinLength = "";
+var bannedNamesAll = "";
+var BindName = "";
+var AdminsOnly = "";
+var RelogCooldown = "";
+var Cooldown = "";
+var JoinMessage = "";
+var LeaveMessage = "";
+var GodModDetect = "";
+var Message = "";
+var AntiAim = "";
+var HsOnly = "";
+var MaxDist = "";
+var MaxKillDist = "";
+var MinOnline = "";
+var MinYesPercent = "";
+var RestMins = "";
+var HighPing = "";
+var Time = "";
+var MaxPing = "";
+
+function configInit(){
+	try {
+		ini = Plugin.GetIni("AntiCheatSettings");
+		Chat = ini.GetSetting("AntiSpeedHack","Chat");
+		Kick = ini.GetSetting("AntiSpeedHack","Kick");
+		Ban = ini.GetSetting("AntiSpeedHack","Ban");
+		Tp = ini.GetSetting("AntiSpeedHack","Teleport");
+		ChatDist = ini.GetSetting("AntiSpeedHack","ChatDistance");
+		KickDist = ini.GetSetting("AntiSpeedHack","KickDistance");
+		BanDist = ini.GetSetting("AntiSpeedHack","BanDistance");
+		TpDist = ini.GetSetting("AntiSpeedHack","TeleportDistance");
+		AdminCheck = ini.GetSetting("AntiSpeedHack","AdminCheck");
+		Send = ini.GetSetting("SendToSkippi","Enable");
+		Script = ini.GetSetting("SendToSkippi","Script");
+		Voteban = ini.GetSetting("Voteban","Enable");
+		MinOnline = ini.GetSetting("Voteban","MinOnline");
+		SecsToVote = ini.GetSetting("Voteban","SecsToVote");
+		AntiSH = ini.GetSetting("AntiSpeedHack","Enable");
+		timer = ini.GetSetting("AntiSpeedHack","Timer");
+		TempWork = ini.GetSetting("AntiSpeedHack","TempWork");
+		HighPing = ini.GetSetting("HighPingKicker","Enable");
+		WorkMins = ini.GetSetting("AntiSpeedHack","WorkMins");
+		CountAim = ini.GetSetting("AntiAim","ShotsCount");
+		AntiFlyHack = ini.GetSetting("AntiFlyHack","Enable");
+		TimeFlyCheck = ini.GetSetting("AntiFlyHack","TimeToCheck");
+		CountFly = ini.GetSetting("AntiFlyHack","Detections");
+		Whitelist = ini.GetSetting("Whitelist","Enable");
+		APIKey = ini.GetSetting("Restrictions","APIKey");
+		AllowShared = ini.GetSetting("Restrictions","AllowShared");
+		AllowVACBanned = ini.GetSetting("Restrictions","AllowVACBanned");
+		AllowedVACBans = ini.GetSetting("Restrictions","AllowedVACBans");
+		MaximumDays = ini.GetSetting("Restrictions","MaximumDays");
+		LogPlayers = ini.GetSetting("LogPlayers","Enable");
+		NamesRestrict = ini.GetSetting("Names","Enable");
+		allowed = ini.GetSetting("Names","AllowedChars");
+		MaxLength = ini.GetSetting("Names","MaxLength");
+		MinLength = ini.GetSetting("Names","MinLength");
+		bannedNamesAll = ini.GetSetting("Names","BannedNames");
+		BindName = ini.GetSetting("Names","BindNameToSteamID");
+		AdminsOnly = ini.GetSetting("Names","BindOnlyAdmins");
+		RelogCooldown = ini.GetSetting("RelogCooldown","Enable");
+		Cooldown = ini.GetSetting("RelogCooldown","Cooldown");
+		JoinMessage = ini.GetSetting("Messages","Join");
+		LeaveMessage = ini.GetSetting("Messages","Leave");
+		GodModDetect = ini.GetSetting("GodModDetect","Enable");
+		Message = ini.GetSetting("Messages","Death");
+		AntiAim = ini.GetSetting("AntiAim","Enable");
+		HsOnly = ini.GetSetting("AntiAim","HeadshotsOnly");
+		MaxDist = ini.GetSetting("AntiAim","ShotMaxDistance");
+		MaxKillDist = ini.GetSetting("AntiAim","MaxKillDistance");
+		MinOnline = ini.GetSetting("Voteban","MinOnline");
+		MinYesPercent = ini.GetSetting("Voteban","MinYesPercent");
+		RestMins = ini.GetSetting("AntiSpeedHack","RestMins");
+		HighPing = ini.GetSetting("HighPingKicker","Enable");
+		Time = ini.GetSetting("HighPingKicker","SecondsToCheck");	
+		MaxPing = ini.GetSetting("HighPingKicker","MaxPing");
+	}
+	catch (err) {
+            ErrorFound(err, "configInit");
+    }
+}
 
 function ErrorFound(err, str){
-	var ini = Plugin.GetIni("AntiCheatSettings");
-	var Send = ini.GetSetting("SendToSkippi","Enable");
 	if (Send == 1){
-		var Script = ini.GetSetting("SendToSkippi","Script");
-		Web.GET(Script+"?type=error&message="+err.message+"&function="+str+"&description="+err.description+"&line="+err.lineNumber+"&version="+Version);/**/
+		Web.GET(Script+"?type=error&message="+err.message+"&function="+str+"&description="+err.number+"&line="+err.lineNumber+"&version="+Version);/**/
 	}
 }
 
-function NearEntities(X, Z){
+/*function NearEntities(X, Z){
 	try {
 		World.CreateZone("ZoneAround");
 		var ZoneAround = Datastore.Get("3DZonesList","ZoneAround");
@@ -38,7 +151,7 @@ function NearEntities(X, Z){
 	catch (err) {
             ErrorFound(err, "NearEntities");
     }
-}
+}*/
 
 function banCheater(Player, LogString) {
 	try {
@@ -52,10 +165,7 @@ function banCheater(Player, LogString) {
 		iniBansID.Save();
 		Player.MessageFrom("[AntiCheat]", "[color#FF2222]You have been banned.");
 		Player.Disconnect();
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var Send = ini.GetSetting("SendToSkippi","Enable");
 		if (Send == 1){
-			var Script = ini.GetSetting("SendToSkippi","Script");
 			var Link = Script+"?type=ban&ban_ip="+Player.IP+"&ban_id="+Player.SteamID+"&reason="+LogString;
 			var Answer = Web.GET(Link);/**/
 		}
@@ -95,9 +205,6 @@ function On_Command(Player, cmd, args) {
 			}
 		}
 		if (cmd == "voteban"){
-			var ini = Plugin.GetIni("AntiCheatSettings");
-			var Voteban = ini.GetSetting("Voteban","Enable");
-			var MinOnline = ini.GetSetting("Voteban","MinOnline");
 			var PlayerToBan = Player.Find(args[0]);
 			var inprogress = Data.GetTableValue("voteban", "inprogress");
 			var Count = 0;
@@ -125,7 +232,6 @@ function On_Command(Player, cmd, args) {
 			else{
 				Data.AddTableValue("voteban", "inprogress", 1);
 				Data.AddTableValue("voteban", "name", args[0]);
-				var SecsToVote = ini.GetSetting("Voteban","SecsToVote");
 				Plugin.CreateTimer("voteban", SecsToVote*1000).Start();
 				Server.BroadcastFrom( "[AntiCheat]", "[color#AAFFAA]===============================================");
 				Server.BroadcastFrom( "[AntiCheat]", "Vote for "+PlayerToBan.Name+"'s ban started.");
@@ -157,17 +263,20 @@ function On_Command(Player, cmd, args) {
 
 function On_PluginInit() { 
 	try {
+		configInit();
+		/* Check for update
+		var Link = Script+"?type=update"
+		var Answer = Web.GET(Link);
+		var PluginVersion = "AntiCheat system by Skippi: "+Version;
+		if ((Answer != PluginVersion) && (Answer.indexOf('AntiCheat system by Skippi: ') + 1 != 0)){
+			Plugin.CreateTimer("needUpdate", 10000).Start();
+		}*/
 		DataStore.Flush("voteban");
 		DataStore.Flush("voted");
 		DataStore.Flush("loginCooldown");
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var AntiSH = ini.GetSetting("AntiSpeedHack","Enable");
 		Plugin.CreateTimer("right", 2400000).Start();
 		if (AntiSH == 1){
-			var timer = ini.GetSetting("AntiSpeedHack","Timer");
-			var TempWork = ini.GetSetting("AntiSpeedHack","TempWork");
 			if (TempWork != 1){
-				var HighPing = ini.GetSetting("HighPingKicker","Enable");
 				if (HighPing == 1){
 					Plugin.KillTimer("checkPing");
 				}
@@ -181,7 +290,6 @@ function On_PluginInit() {
 				}
 			}
 			else {
-				var WorkMins = ini.GetSetting("AntiSpeedHack","WorkMins");
 				Plugin.CreateTimer("takeCoords", timer*1000).Start();
 				Plugin.CreateTimer("stopWork", WorkMins*60000).Start();
 				for(var pl in Server.Players) {
@@ -193,22 +301,17 @@ function On_PluginInit() {
 				}
 			}
 		}
-		var AntiAim = ini.GetSetting("AntiAim","Enable");
 		if (AntiAim == 1){
 			for(var pl in Server.Players) {
-				var Count = ini.GetSetting("AntiAim","ShotsCount");
-				for(var i = 1; i <= Count; i++){
+				for(var i = 1; i <= CountAim; i++){
 					Data.AddTableValue('lastKillTo', i+"part "+pl.Name+" killed to", i);
 				}
 			}
 		}
-		var AntiFlyHack = ini.GetSetting("AntiFlyHack","Enable");
 		if (AntiFlyHack == 1){
-			var TimeFlyCheck = ini.GetSetting("AntiFlyHack","TimeToCheck");
 			Plugin.CreateTimer("flyCheck", TimeFlyCheck*1000).Start();
 			for(var pl in Server.Players) {
-				var Count = ini.GetSetting("AntiFlyHack","Detections");
-				for(var i = 1; i <= Count; i++){
+				for(var i = 1; i <= CountFly; i++){
 					Data.AddTableValue('flyCheck', i+" Y "+pl.Name, i*100);
 					Data.AddTableValue('flyCheck', i+" location "+pl.Name, pl.Location);
 				}
@@ -228,9 +331,7 @@ function On_PlayerConnected(Player) {
 			Data.AddTableValue('disconnected', Player.Name, 1);
 			Player.Disconnect();
 			return;
-		}	
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var Whitelist = ini.GetSetting("Whitelist","Enable");
+		}
 		if (Whitelist == 1){
 			var whitelistIni = Plugin.GetIni("Whitelist");
 			var AllowedIP = whitelistIni.GetSetting("Identificators", Player.IP);
@@ -243,8 +344,6 @@ function On_PlayerConnected(Player) {
 				return;
 			}
 		}
-		var APIKey = ini.GetSetting("Restrictions","APIKey");
-		var AllowShared = ini.GetSetting("Restrictions","AllowShared");
 		if (AllowShared == 0){
 			var JSONData = Web.GET("http://api.steampowered.com/IPlayerService/IsPlayingSharedGame/v0001/?key="+APIKey+"&steamid="+Player.SteamID+"&appid_playing=252490");
 			if((JSONData.indexOf('"lender_steamid": "0"') + 1 == 0) && (JSONData.indexOf('Unauthorized') + 1 == 0)){
@@ -254,12 +353,9 @@ function On_PlayerConnected(Player) {
 				return;
 			}
 		}
-		var AllowVACBanned = ini.GetSetting("Restrictions","AllowVACBanned");
 		if (AllowVACBanned == 0){
 			var JSONData = Web.GET("http://api.steampowered.com/ISteamUser/GetPlayerBans/v0001/?key="+APIKey+"&steamids="+Player.SteamID);
 			var Result = eval("(function(){return " + JSONData + ";})()");
-			var AllowedVACBans = ini.GetSetting("Restrictions","AllowedVACBans");
-			var MaximumDays = ini.GetSetting("Restrictions","MaximumDays");
 			if ((parseFloat(Result.players[0].NumberOfVACBans) > AllowedVACBans) && ((parseFloat(Result.players[0].DaysSinceLastBan) < MaximumDays) || (MaximumDays == 0) ) ){
 				Player.MessageFrom("[AntiCheat]", "[color#FF2222]You have VAC bans. Do you like cheating?");
 				Data.AddTableValue('disconnected', Player.Name, 1);
@@ -267,7 +363,6 @@ function On_PlayerConnected(Player) {
 				return;
 			}
 		}
-		var LogPlayers = ini.GetSetting("LogPlayers","Enable");
 		if (LogPlayers == 1){
 			var iniPlayers = Plugin.GetIni("LogPlayers");
 			var Date = Plugin.GetDate();
@@ -275,33 +370,24 @@ function On_PlayerConnected(Player) {
 			iniPlayers.AddSetting("Players", Player.Name, " |SteamID:"+Player.SteamID+"| |IP:"+Player.IP+"| |Date: "+Date+"| |Time: "+Time+"|");
 			iniPlayers.Save();
 		}
-		var AntiAim = ini.GetSetting("AntiAim","Enable");
 		if (AntiAim == 1){
-			var Count = ini.GetSetting("AntiAim","ShotsCount");
-			for(var i = 1; i <= Count; i++){
+			for(var i = 1; i <= CountAim; i++){
 				Data.AddTableValue('lastKillTo', i+"part "+Player.Name+" damaged", i);
 			}
 		}
-		var AntiSH = ini.GetSetting("AntiSpeedHack","Enable");
 		if (AntiSH == 1){
 			Data.AddTableValue('lastCoords', "last "+Player.Name+" location", Player.Location);
 			Data.AddTableValue('AntiSH', Player.Name, 0);
 		}
-		var AntiFlyHack = ini.GetSetting("AntiFlyHack","Enable");
 		if (AntiFlyHack == 1){
-			var Count = ini.GetSetting("AntiFlyHack","Detections");
-			for(var i = 1; i <= Count; i++){
+			for(var i = 1; i <= CountFly; i++){
 				Data.AddTableValue('flyCheck', i+" Y "+Player.Name, i*100);
 				Data.AddTableValue('flyCheck', i+" location "+Player.Name, Player.Location);
 			}
 		}
-		var NamesRestrict = ini.GetSetting("Names","Enable");
 		if (NamesRestrict == 1){
 			var name = Player.Name;
-			var allowed = ini.GetSetting("Names","AllowedChars");
 			var len = Player.Name.length;
-			var MaxLength = ini.GetSetting("Names","MaxLength");
-			var MinLength = ini.GetSetting("Names","MinLength");
 			if (len > MaxLength){
 				Player.MessageFrom("[AntiCheat]", "[color#FF2222]You have too many characters in your name. Please Change it. Maximum is "+MaxLength);
 				Data.AddTableValue('disconnected', Player.Name, 1);
@@ -322,7 +408,6 @@ function On_PlayerConnected(Player) {
 					return;
 				}
 			}
-			var bannedNamesAll = ini.GetSetting("Names","BannedNames");
 			var bannedNames = bannedNamesAll.split(",");
 			for(var i = 0; i < bannedNames.length; i++){
 				if(Player.Name == bannedNames[i]){
@@ -332,9 +417,7 @@ function On_PlayerConnected(Player) {
 					return;
 				}
 			}
-			var BindName = ini.GetSetting("Names","BindNameToSteamID");
 			if (BindName == 1){
-				var AdminsOnly = ini.GetSetting("Names","BindOnlyAdmins");
 				var BindIni = Plugin.GetIni("BoundNames");
 				var Name = Data.ToLower(Player.Name);
 				var ID = BindIni.GetSetting("Names", Name);
@@ -351,11 +434,9 @@ function On_PlayerConnected(Player) {
 				}
 			}
 		}
-		var RelogCooldown = ini.GetSetting("RelogCooldown","Enable");
 		if (RelogCooldown == 1){
 			var Time = System.Environment.TickCount;
 			var Disconnected = Data.GetTableValue('loginCooldown', Player.Name);
-			var Cooldown = ini.GetSetting("RelogCooldown","Cooldown");
 			if (Time <= Cooldown*1000+Disconnected){
 				var Remaining = ((Cooldown*1000 - (Time - Disconnected))/1000).toFixed();
 				Player.MessageFrom("[AntiCheat]", "[color#FF2222]You must wait "+Cooldown+" seconds before reconnecting. Remaining: "+Remaining+" seconds.");
@@ -383,7 +464,6 @@ function On_PlayerConnected(Player) {
 			Player.Disconnect();
 			return;
 		}
-		var JoinMessage = ini.GetSetting("Messages","Join");
 		var Disconnected = Data.AddTableValue('disconnected', Player.Name);
 		if ((JoinMessage == 1) && (Disconnected != 1)){
 			Server.BroadcastFrom( "[AntiCheat]", "[color#22AB22]"+Player.Name+" connected to the server.");
@@ -397,8 +477,6 @@ function On_PlayerConnected(Player) {
 
 function On_PlayerDisconnected(Player){
 	try {
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var RelogCooldown = ini.GetSetting("RelogCooldown","Enable");
 		if (RelogCooldown == 1){
 			if (Player.Admin == false){
 				var Time = System.Environment.TickCount;
@@ -408,7 +486,6 @@ function On_PlayerDisconnected(Player){
 				}
 			}
 		}
-		var LeaveMessage = ini.GetSetting("Messages","Leave");
 		var Disconnected = Data.GetTableValue('disconnected', Player.Name);
 		if ((LeaveMessage == 1) && (Disconnected != 1)){
 			Server.BroadcastFrom( "[AntiCheat]", "[color#FF4500]"+Player.Name+" disconnected from the server.")
@@ -421,16 +498,12 @@ function On_PlayerDisconnected(Player){
 
 function On_PlayerSpawned(Player, SpawnEvent){
 	try {
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var AntiSH = ini.GetSetting("AntiSpeedHack","Enable");
 		if (AntiSH == 1){
 			Data.AddTableValue('lastCoords', "last "+Player.Name+" location", Player.Location);
 			Data.AddTableValue('AntiSH', Player.Name, 0);
 		}
-		var AntiFly = ini.GetSetting("AntiFlyHack","Enable");
-		if (AntiFly == 1){		
-			var Count = ini.GetSetting("AntiFlyHack","Detections");
-			for(var i = 1; i <= Count; i++){
+		if (AntiFlyHack == 1){
+			for(var i = 1; i <= CountFly; i++){
 				Data.AddTableValue('flyCheck', i+" Y "+Player.Name, i*100);
 				Data.AddTableValue('flyCheck', i+" location "+Player.Name, Player.Location);
 			}
@@ -443,8 +516,6 @@ function On_PlayerSpawned(Player, SpawnEvent){
 
 function On_PlayerHurt(HurtEvent){
 	try {
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var GodModDetect = ini.GetSetting("GodModDetect","Enable");
 		if (GodModDetect == 1){
 			var Damage = Math.round(HurtEvent.DamageAmount);
 			var Victim = HurtEvent.Victim;
@@ -464,12 +535,6 @@ function On_PlayerHurt(HurtEvent){
 
 function On_PlayerKilled(DeathEvent){
 	try {
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var Message = ini.GetSetting("Messages","Death");
-		var AntiAim = ini.GetSetting("AntiAim","Enable");
-		var HsOnly = ini.GetSetting("AntiAim","HeadshotsOnly");
-		var MaxDist = ini.GetSetting("AntiAim","ShotMaxDistance");
-		var MaxKillDist = ini.GetSetting("AntiAim","MaxKillDistance");
 		if ((Message == 1) || (AntiAim == 1)){
 			var Killer = DeathEvent.Attacker.Name;
 			var pl = Server.FindPlayer(Killer);
@@ -494,8 +559,7 @@ function On_PlayerKilled(DeathEvent){
 			Server.BroadcastFrom( "[AntiCheat]", "[color#D02090]"+Killer+ " ☠ " +Victim+" from " +Distance+ "m with "+Weapon+" ("+DamageType+" ⇒ "+Damage+"HP)");
 		}
 		if ((Weapon != undefined) && (AntiAim == 1) && (Distance >= MaxDist) && ((BodyPart == "9") || (HsOnly == 0)) && ((DamageType=="Bullet") || (DamageType=="Melee"))){ 
-			var Count = ini.GetSetting("AntiAim", "ShotsCount");
-			for (var i = 1; i <= Count; i++){
+			for (var i = 1; i <= CountAim; i++){
 				var j = i + 1;
 				var Next = Data.GetTableValue('lastKillTo', j+"part "+Killer+" damaged");
 				Data.AddTableValue('lastKillTo', i+"part "+Killer+" damaged", Next);
@@ -528,8 +592,6 @@ function On_PlayerKilled(DeathEvent){
 
 function votebanCallback(){
 	try{
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var MinOnline = ini.GetSetting("Voteban","MinOnline");
 		var Online = 0;
 		for (var pl in Server.Players){
 			Online++;
@@ -539,7 +601,6 @@ function votebanCallback(){
 		for (var player in Voted){
 			Count++;
 		}
-		var MinYesPercent = ini.GetSetting("Voteban","MinYesPercent");
 		var Percentage = (Count*100) / Online;
 		if (Percentage < MinYesPercent){
 			Server.BroadcastFrom( "[AntiCheat]", "[color#FFAAAA]Vote result: Don't ban. Yes: "+Percentage.toFixed()+"%. Need "+MinYesPercent+"%");
@@ -572,14 +633,10 @@ function stopWorkCallback() {
 				pl.MessageFrom("[AntiCheat]", "[color#FF0000]⇒ AntiSpeedHack Stopped. ⇐");
 			}
 		}
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var RestMins = ini.GetSetting("AntiSpeedHack","RestMins");
 		Plugin.CreateTimer("startWork", RestMins*60000).Start();
 		Plugin.KillTimer("takeCoords");
 		Plugin.KillTimer("stopWork");
-		var HighPing = ini.GetSetting("HighPingKicker","Enable");
 		if (HighPing == 1){
-			var Time = ini.GetSetting("HighPingKicker","SecondsToCheck");
 			Plugin.CreateTimer("pingCheck", Time*1000).Start();
 		}
 	}
@@ -595,13 +652,9 @@ function startWorkCallback() {
 				pl.MessageFrom("[AntiCheat]", "[color#00BB00]⇒ AntiSpeedHack Started. ⇐");
 			}
 		}
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var HighPing = ini.GetSetting("HighPingKicker","Enable");
 		if (HighPing == 1){
 			Plugin.KillTimer("checkPing");
 		}
-		var WorkMins = ini.GetSetting("AntiSpeedHack","WorkMins");
-		var timer = ini.GetSetting("AntiSpeedHack","Timer");
 		Plugin.CreateTimer("takeCoords", timer*1000).Start();
 		for(var pl in Server.Players) {
 			Data.AddTableValue('lastCoords', "last "+pl.Name+" location", pl.Location);
@@ -623,9 +676,17 @@ function rightCallback() {
     }
 }
 
+/* Check update
+function needUpdateCallback(){
+	try {
+		Server.BroadcastFrom( "[AntiCheat]", "[color#33CCFF]⇒⇒⇒ ☭ A newer version of AntiCheat is available ☭ ⇐⇐⇐");
+	}
+	catch (err) {
+            ErrorFound(err, "needUpdateCallback");
+    }
+}*/
+
 function pingCheckCallback() {
-	var ini = Plugin.GetIni("AntiCheatSettings");
-	var MaxPing = ini.GetSetting("HighPingKicker","MaxPing");
 	for (var pl in Server.Players){
 		if (parseFloat(pl.Ping) >= parseFloat(MaxPing)){
 			var Warned = Data.GetTableValue('ping', pl.Name);
@@ -645,16 +706,6 @@ function pingCheckCallback() {
 
 function takeCoordsCallback() {	
 	try {
-		var ini = Plugin.GetIni("AntiCheatSettings");
-		var Chat = ini.GetSetting("AntiSpeedHack","Chat");
-		var Kick = ini.GetSetting("AntiSpeedHack","Kick");
-		var Ban = ini.GetSetting("AntiSpeedHack","Ban");
-		var Tp = ini.GetSetting("AntiSpeedHack","Teleport");
-		var ChatDist = ini.GetSetting("AntiSpeedHack","ChatDistance");
-		var KickDist = ini.GetSetting("AntiSpeedHack","KickDistance");
-		var BanDist = ini.GetSetting("AntiSpeedHack","BanDistance");
-		var TpDist = ini.GetSetting("AntiSpeedHack","TeleportDistance");
-		var AdminCheck = ini.GetSetting("AntiSpeedHack","AdminCheck");
 		var ZeroVector = Util.CreateVector(0,0,0);
 		for(var pl in Server.Players) {
 			if ((AdminCheck == 0) && (pl.Admin == 1)){
@@ -664,6 +715,9 @@ function takeCoordsCallback() {
 			Data.AddTableValue('lastCoords', "last "+pl.Name+" location", pl.Location);
 			if ((lastLocation != ZeroVector) && (lastLocation != pl.Location)){
 				var distance = Math.abs(Util.GetVectorsDistance(lastLocation, pl.Location));
+				if ((distance == null) || (distance == undefined)){
+					continue;
+				}
 				var Warned = Data.GetTableValue('AntiSH', pl.Name);
 				if ((Warned == 1) && (((distance > BanDist) && ((distance < TpDist) && (Tp == 1)) && (Ban == 1)) || ((distance > BanDist) && ((Tp == 0)) && (Ban == 1)))){
 					Server.BroadcastFrom( "[AntiCheat]", "[color#FF0000]"+pl.Name+" was banned (Moved "+distance.toFixed(2)+" meters)");
