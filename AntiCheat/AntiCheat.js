@@ -5,7 +5,7 @@ If you want - you can rate this plugin on http://gomagma.org
 GitHub - https://github.com/Skippidar/Skippi-Rust-Anticheat
 */
 
-var Version = "4.7.3";
+var Version = "4.7.3.1";
 var ini = "";
 var Chat = "";
 var Kick = "";
@@ -24,7 +24,6 @@ var SecsToVote = "";
 var AntiSH = "";
 var timer = "";
 var TempWork = "";
-var HighPing = "";
 var WorkMins = "";
 var CountAim = "";
 var AntiFlyHack = "";
@@ -54,16 +53,21 @@ var AntiAim = "";
 var HsOnly = "";
 var MaxDist = "";
 var MaxKillDist = "";
-var MinOnline = "";
 var MinYesPercent = "";
 var RestMins = "";
 var HighPing = "";
 var Time = "";
 var MaxPing = "";
+var MaxHeight = "";
 
 function configInit(){
 	try {
 		ini = Plugin.GetIni("AntiCheatSettings");
+		AntiSH = ini.GetSetting("AntiSpeedHack","Enable");
+		timer = ini.GetSetting("AntiSpeedHack","Timer");
+		TempWork = ini.GetSetting("AntiSpeedHack","TempWork");
+		WorkMins = ini.GetSetting("AntiSpeedHack","WorkMins");	
+		RestMins = ini.GetSetting("AntiSpeedHack","RestMins");
 		Chat = ini.GetSetting("AntiSpeedHack","Chat");
 		Kick = ini.GetSetting("AntiSpeedHack","Kick");
 		Ban = ini.GetSetting("AntiSpeedHack","Ban");
@@ -73,27 +77,26 @@ function configInit(){
 		BanDist = ini.GetSetting("AntiSpeedHack","BanDistance");
 		TpDist = ini.GetSetting("AntiSpeedHack","TeleportDistance");
 		AdminCheck = ini.GetSetting("AntiSpeedHack","AdminCheck");
+		AntiAim = ini.GetSetting("AntiAim","Enable");
+		CountAim = ini.GetSetting("AntiAim","ShotsCount");
+		HsOnly = ini.GetSetting("AntiAim","HeadshotsOnly");
+		MaxDist = ini.GetSetting("AntiAim","ShotMaxDistance");
+		MaxKillDist = ini.GetSetting("AntiAim","MaxKillDistance");
+		AntiFlyHack = ini.GetSetting("AntiFlyHack","Enable");
+		MaxHeight = ini.GetSetting("AntiFlyHack","MaxHeight");
+		TimeFlyCheck = ini.GetSetting("AntiFlyHack","TimeToCheck");
+		CountFly = ini.GetSetting("AntiFlyHack","Detections");
 		Send = ini.GetSetting("SendToSkippi","Enable");
 		Script = ini.GetSetting("SendToSkippi","Script");
 		Voteban = ini.GetSetting("Voteban","Enable");
 		MinOnline = ini.GetSetting("Voteban","MinOnline");
 		SecsToVote = ini.GetSetting("Voteban","SecsToVote");
-		AntiSH = ini.GetSetting("AntiSpeedHack","Enable");
-		timer = ini.GetSetting("AntiSpeedHack","Timer");
-		TempWork = ini.GetSetting("AntiSpeedHack","TempWork");
-		HighPing = ini.GetSetting("HighPingKicker","Enable");
-		WorkMins = ini.GetSetting("AntiSpeedHack","WorkMins");
-		CountAim = ini.GetSetting("AntiAim","ShotsCount");
-		AntiFlyHack = ini.GetSetting("AntiFlyHack","Enable");
-		TimeFlyCheck = ini.GetSetting("AntiFlyHack","TimeToCheck");
-		CountFly = ini.GetSetting("AntiFlyHack","Detections");
-		Whitelist = ini.GetSetting("Whitelist","Enable");
+		MinYesPercent = ini.GetSetting("Voteban","MinYesPercent");
 		APIKey = ini.GetSetting("Restrictions","APIKey");
 		AllowShared = ini.GetSetting("Restrictions","AllowShared");
 		AllowVACBanned = ini.GetSetting("Restrictions","AllowVACBanned");
 		AllowedVACBans = ini.GetSetting("Restrictions","AllowedVACBans");
 		MaximumDays = ini.GetSetting("Restrictions","MaximumDays");
-		LogPlayers = ini.GetSetting("LogPlayers","Enable");
 		NamesRestrict = ini.GetSetting("Names","Enable");
 		allowed = ini.GetSetting("Names","AllowedChars");
 		MaxLength = ini.GetSetting("Names","MaxLength");
@@ -105,18 +108,13 @@ function configInit(){
 		Cooldown = ini.GetSetting("RelogCooldown","Cooldown");
 		JoinMessage = ini.GetSetting("Messages","Join");
 		LeaveMessage = ini.GetSetting("Messages","Leave");
-		GodModDetect = ini.GetSetting("GodModDetect","Enable");
 		Message = ini.GetSetting("Messages","Death");
-		AntiAim = ini.GetSetting("AntiAim","Enable");
-		HsOnly = ini.GetSetting("AntiAim","HeadshotsOnly");
-		MaxDist = ini.GetSetting("AntiAim","ShotMaxDistance");
-		MaxKillDist = ini.GetSetting("AntiAim","MaxKillDistance");
-		MinOnline = ini.GetSetting("Voteban","MinOnline");
-		MinYesPercent = ini.GetSetting("Voteban","MinYesPercent");
-		RestMins = ini.GetSetting("AntiSpeedHack","RestMins");
 		HighPing = ini.GetSetting("HighPingKicker","Enable");
 		Time = ini.GetSetting("HighPingKicker","SecondsToCheck");	
 		MaxPing = ini.GetSetting("HighPingKicker","MaxPing");
+		GodModDetect = ini.GetSetting("GodModDetect","Enable");
+		Whitelist = ini.GetSetting("Whitelist","Enable");
+		LogPlayers = ini.GetSetting("LogPlayers","Enable");
 	}
 	catch (err) {
             ErrorFound(err, "configInit");
@@ -564,17 +562,17 @@ function On_PlayerKilled(DeathEvent){
 				var Next = Data.GetTableValue('lastKillTo', j+"part "+Killer+" damaged");
 				Data.AddTableValue('lastKillTo', i+"part "+Killer+" damaged", Next);
 			}
-			Data.AddTableValue('lastKillTo', Count+"part "+Killer+" damaged", BodyPart);
+			Data.AddTableValue('lastKillTo', CountAim+"part "+Killer+" damaged", BodyPart);
 			var ban = 1;
-			for (var i = 1; i <= Count; i++){
+			for (var i = 1; i <= CountAim; i++){
 				var j = i + 1;
 				if ( (Data.GetTableValue('lastKillTo', i+"part "+Killer+" damaged")) != (Data.GetTableValue('lastKillTo', j+"part "+Killer+" damaged"))){
 					ban = 0;
 				}
 			}
 			if (ban == 1){
-				var LogString = "Made "+Count+" shots from "+MaxDist+"m in a row into same bodyparts";
-				Server.BroadcastFrom( "[AntiCheat]", "[color#FF0000]"+Killer+ " made " +Count+ " shots from high distance into same bodyparts. Banned. (AimHack)");
+				var LogString = "Made "+CountAim+" shots from "+MaxDist+"m in a row into same bodyparts";
+				Server.BroadcastFrom( "[AntiCheat]", "[color#FF0000]"+Killer+ " made " +CountAim+ " shots from high distance into same bodyparts. Banned. (AimHack)");
 				return banCheater(DeathEvent.Attacker, LogString);
 			}
 		}
