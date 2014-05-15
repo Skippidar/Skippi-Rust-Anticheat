@@ -5,7 +5,7 @@ If you want - you can rate this plugin on http://gomagma.org
 GitHub - https://github.com/Skippidar/Skippi-Rust-Anticheat
 */
 
-var Version = "4.7.3.1";
+var Version = "4.7.4";
 var ini = "";
 var Chat = "";
 var Kick = "";
@@ -59,6 +59,7 @@ var HighPing = "";
 var Time = "";
 var MaxPing = "";
 var MaxHeight = "";
+configInit();
 
 function configInit(){
 	try {
@@ -153,6 +154,9 @@ function ErrorFound(err, str){
 
 function banCheater(Player, LogString) {
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		var Date = Plugin.GetDate();
 		var Time = Plugin.GetTime();
 		var iniBansIP = Plugin.GetIni("BansIP");
@@ -175,6 +179,9 @@ function banCheater(Player, LogString) {
 
 function On_Command(Player, cmd, args) {
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		if(cmd == "banip" && Player.Admin){
 			var pl = Player.Find(args[0]);
 			if(pl.Name == undefined){
@@ -262,13 +269,6 @@ function On_Command(Player, cmd, args) {
 function On_PluginInit() { 
 	try {
 		configInit();
-		/* Check for update
-		var Link = Script+"?type=update"
-		var Answer = Web.GET(Link);
-		var PluginVersion = "AntiCheat system by Skippi: "+Version;
-		if ((Answer != PluginVersion) && (Answer.indexOf('AntiCheat system by Skippi: ') + 1 != 0)){
-			Plugin.CreateTimer("needUpdate", 10000).Start();
-		}*/
 		DataStore.Flush("voteban");
 		DataStore.Flush("voted");
 		DataStore.Flush("loginCooldown");
@@ -323,6 +323,9 @@ function On_PluginInit() {
 
 function On_PlayerConnected(Player) {
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		Data.AddTableValue('disconnected', Player.Name, 0);
 		if (Player.Name.indexOf('=') + 1 != 0){
 			Player.MessageFrom("[AntiCheat]", "[color#FF2222]You have illegal characters in your name. Please, change it.");
@@ -475,6 +478,9 @@ function On_PlayerConnected(Player) {
 
 function On_PlayerDisconnected(Player){
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		if (RelogCooldown == 1){
 			if (Player.Admin == false){
 				var Time = System.Environment.TickCount;
@@ -496,6 +502,9 @@ function On_PlayerDisconnected(Player){
 
 function On_PlayerSpawned(Player, SpawnEvent){
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		if (AntiSH == 1){
 			Data.AddTableValue('lastCoords', "last "+Player.Name+" location", Player.Location);
 			Data.AddTableValue('AntiSH', Player.Name, 0);
@@ -514,6 +523,9 @@ function On_PlayerSpawned(Player, SpawnEvent){
 
 function On_PlayerHurt(HurtEvent){
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		if (GodModDetect == 1){
 			var Damage = Math.round(HurtEvent.DamageAmount);
 			var Victim = HurtEvent.Victim;
@@ -533,6 +545,9 @@ function On_PlayerHurt(HurtEvent){
 
 function On_PlayerKilled(DeathEvent){
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		if ((Message == 1) || (AntiAim == 1)){
 			var Killer = DeathEvent.Attacker.Name;
 			var pl = Server.FindPlayer(Killer);
@@ -590,6 +605,9 @@ function On_PlayerKilled(DeathEvent){
 
 function votebanCallback(){
 	try{
+		if (AntiSH == ""){
+			configInit();
+		}
 		var Online = 0;
 		for (var pl in Server.Players){
 			Online++;
@@ -626,9 +644,12 @@ function votebanCallback(){
 
 function stopWorkCallback() {
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		for(var pl in Server.Players) {
 			if (pl.Admin){
-				pl.MessageFrom("[AntiCheat]", "[color#FF0000]⇒ AntiSpeedHack Stopped. ⇐");
+				pl.MessageFrom("[AntiCheat]", "[color#FF0000]⇒ AntiSpeedHack Paused. ⇐");
 			}
 		}
 		Plugin.CreateTimer("startWork", RestMins*60000).Start();
@@ -645,6 +666,9 @@ function stopWorkCallback() {
 
 function startWorkCallback() {
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		for(var pl in Server.Players) {
 			if (pl.Admin){
 				pl.MessageFrom("[AntiCheat]", "[color#00BB00]⇒ AntiSpeedHack Started. ⇐");
@@ -674,17 +698,10 @@ function rightCallback() {
     }
 }
 
-/* Check update
-function needUpdateCallback(){
-	try {
-		Server.BroadcastFrom( "[AntiCheat]", "[color#33CCFF]⇒⇒⇒ ☭ A newer version of AntiCheat is available ☭ ⇐⇐⇐");
-	}
-	catch (err) {
-            ErrorFound(err, "needUpdateCallback");
-    }
-}*/
-
 function pingCheckCallback() {
+	if (AntiSH == ""){
+		configInit();
+	}
 	for (var pl in Server.Players){
 		if (parseFloat(pl.Ping) >= parseFloat(MaxPing)){
 			var Warned = Data.GetTableValue('ping', pl.Name);
@@ -704,6 +721,9 @@ function pingCheckCallback() {
 
 function takeCoordsCallback() {	
 	try {
+		if (AntiSH == ""){
+			configInit();
+		}
 		var ZeroVector = Util.CreateVector(0,0,0);
 		for(var pl in Server.Players) {
 			if ((AdminCheck == 0) && (pl.Admin == 1)){
