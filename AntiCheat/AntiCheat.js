@@ -169,7 +169,7 @@ function banCheater(Player, LogString) {
 		Player.Disconnect();
 		if (Send == 1){
 			var Link = Script+"?type=ban&ban_ip="+Player.IP+"&ban_id="+Player.SteamID+"&reason="+LogString;
-			var Answer = Web.GET(Link);/**/
+			var Answer = Web.GET(Link);
 		}
 	}
 	catch (err) {
@@ -492,7 +492,7 @@ function On_PlayerDisconnected(Player){
 		}
 		var Disconnected = Data.GetTableValue('disconnected', Player.Name);
 		if ((LeaveMessage == 1) && (Disconnected != 1)){
-			Server.BroadcastFrom( "[AntiCheat]", "[color#FF4500]"+Player.Name+" disconnected from the server.")
+			Server.BroadcastFrom( "[AntiCheat]", "[color#FF4500]"+Player.Name+" disconnected from the server.");
 		}
 	}
 	catch (err) {
@@ -731,7 +731,7 @@ function takeCoordsCallback() {
 			}
 			var lastLocation = Data.GetTableValue('lastCoords', "last "+pl.Name+" location");
 			Data.AddTableValue('lastCoords', "last "+pl.Name+" location", pl.Location);
-			if ((lastLocation != ZeroVector) && (lastLocation != pl.Location)){
+			if ((lastLocation != ZeroVector) && (lastLocation != pl.Location) && (lastLocation != undefined)){
 				var distance = Math.abs(Util.GetVectorsDistance(lastLocation, pl.Location));
 				if ((distance == null) || (distance == undefined)){
 					continue;
