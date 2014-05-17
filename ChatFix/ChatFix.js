@@ -1,7 +1,6 @@
 
 function On_Chat(Player, ChatMessage) {
 	var ChatString = ChatMessage.toString();
-	ChatMessage.NewText = "";
 	var string = "";
 	if (ChatString.length > 47){
 		var Posted = false;
@@ -14,7 +13,8 @@ function On_Chat(Player, ChatMessage) {
 				string = "";
 			}
 		}	
-		Server.BroadcastFrom(Name, string);	
+		Server.BroadcastFrom(Name, string);			
+		ChatMessage.NewText = "";
 	}
 	return;
 }
