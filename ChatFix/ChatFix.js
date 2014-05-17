@@ -1,20 +1,17 @@
 
 function On_Chat(Player, ChatMessage) {
 	var ChatString = ChatMessage.toString();
+	ChatMessage.NewText = "";
 	var string = "";
-	if (ChatString.length > 67){
+	if (ChatString.length > 47){
 		for (var i = 1; i <= ChatString.length - 2; i++){
-			if (i % 65 == 0){
-				string = string + ChatString.charAt(i);
+			string = string + ChatString.charAt(i);
+			if (((string.length > 35) && (string.charAt(string.length) == " ")) || (string.length > 45)){
 				Server.BroadcastFrom(Player.Name, string);
 				string = "";
 			}
-			else {
-				string = string + ChatString.charAt(i);
-			}
 		}	
-		Server.BroadcastFrom(Player.Name, string);		
-		ChatMessage.NewText = null;
+		Server.BroadcastFrom(Player.Name, string);	
 	}
 	return;
 }
