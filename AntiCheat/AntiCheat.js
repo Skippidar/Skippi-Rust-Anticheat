@@ -61,6 +61,21 @@ var MaxPing = "";
 var MaxHeight = "";
 configInit();
 
+function SafeCreateTimer(Name, Time){
+	try {
+		if ((Time < 2000) || (Time == undefined) || (Time == null)){
+			Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Please, report to administration.");
+			return 1;
+		}
+		else {
+			Plugin.CreateTimer(Name, Time).Start();
+			return 0;
+		}
+	}
+	catch (err) {
+            ErrorFound(err, "SafeCreateTimer");
+    }
+}
 function configInit(){
 	try {
 		ini = Plugin.GetIni("AntiCheatSettings");
@@ -200,7 +215,7 @@ function On_Command(Player, cmd, args) {
 		}
 		if(cmd == "whitelist" && Player.Admin){
 			if (args[0] == undefined){
-				Player.MessageFrom("[AntiCheat]", "[color#FF0000]Type any identificator (IP or ID)");
+				Player.MessageFrom("[AntiCheat]", "[color#FF6666]Type any identificator (IP or ID)");
 			}
 			else {
 				var iniWhitelist = Plugin.GetIni("Whitelist");
@@ -237,7 +252,7 @@ function On_Command(Player, cmd, args) {
 			else{
 				Data.AddTableValue("voteban", "inprogress", 1);
 				Data.AddTableValue("voteban", "name", args[0]);
-				Plugin.CreateTimer("voteban", SecsToVote*1000).Start();
+				SafeCreateTimer("voteban", SecsToVote*1000);
 				Server.BroadcastFrom( "[AntiCheat]", "[color#AAFFAA]===============================================");
 				Server.BroadcastFrom( "[AntiCheat]", "Vote for "+PlayerToBan.Name+"'s ban started.");
 				Server.BroadcastFrom( "[AntiCheat]", "Vote initiated by "+Player.Name);
@@ -278,7 +293,7 @@ function On_PluginInit() {
 				if (HighPing == 1){
 					Plugin.KillTimer("checkPing");
 				}
-				Plugin.CreateTimer("takeCoords", timer*1000).Start();
+				SafeCreateTimer("takeCoords", timer*1000);
 				for(var pl in Server.Players) {
 					Data.AddTableValue('lastCoords', "last "+pl.Name+" location", pl.Location);
 					Data.AddTableValue('AntiSH', pl.Name, 0);
@@ -288,8 +303,8 @@ function On_PluginInit() {
 				}
 			}
 			else {
-				Plugin.CreateTimer("takeCoords", timer*1000).Start();
-				Plugin.CreateTimer("stopWork", WorkMins*60000).Start();
+				SafeCreateTimer("takeCoords", timer*1000);
+				SafeCreateTimer("stopWork", WorkMins*60000);
 				for(var pl in Server.Players) {
 					Data.AddTableValue('lastCoords', "last "+pl.Name+" location", pl.Location);
 					Data.AddTableValue('AntiSH', pl.Name, 0);
@@ -307,7 +322,7 @@ function On_PluginInit() {
 			}
 		}
 		if (AntiFlyHack == 1){
-			Plugin.CreateTimer("flyCheck", TimeFlyCheck*1000).Start();
+			SafeCreateTimer("flyCheck", TimeFlyCheck*1000);
 			for(var pl in Server.Players) {
 				for(var i = 1; i <= CountFly; i++){
 					Data.AddTableValue('flyCheck', i+" Y "+pl.Name, i*100);
@@ -587,14 +602,14 @@ function On_PlayerKilled(DeathEvent){
 			}
 			if (ban == 1){
 				var LogString = "Made "+CountAim+" shots from "+MaxDist+"m in a row into same bodyparts";
-				Server.BroadcastFrom( "[AntiCheat]", "[color#FF0000]"+Killer+ " made " +CountAim+ " shots from high distance into same bodyparts. Banned. (AimHack)");
+				Server.BroadcastFrom( "[AntiCheat]", "[color#FF6666]"+Killer+ " made " +CountAim+ " shots from high distance into same bodyparts. Banned. (AimHack)");
 				return banCheater(DeathEvent.Attacker, LogString);
 			}
 		}
 		var WeaponDistance = ini.GetSetting("Ranges",Weapon);
 		if (((Distance >= MaxKillDist) || ((WeaponDistance != undefined) && (Distance > WeaponDistance))) && (Weapon != undefined)){
 			var LogString = "Made kill from "+Distance+"m ("+Weapon+")";
-			Server.BroadcastFrom( "[AntiCheat]", "[color#FF0000]"+Killer+" killed "+Victim+" from "+Distance+"m ("+Weapon+"). Banned.");
+			Server.BroadcastFrom( "[AntiCheat]", "[color#FF6666]"+Killer+" killed "+Victim+" from "+Distance+"m ("+Weapon+"). Banned.");
 			return banCheater(DeathEvent.Attacker, LogString);
 		}
 	}
@@ -649,14 +664,14 @@ function stopWorkCallback() {
 		}
 		for(var pl in Server.Players) {
 			if (pl.Admin){
-				pl.MessageFrom("[AntiCheat]", "[color#FF0000]⇒ AntiSpeedHack Paused. ⇐");
+				pl.MessageFrom("[AntiCheat]", "[color#FF2222]⇒ AntiSpeedHack Paused. ⇐");
 			}
 		}
-		Plugin.CreateTimer("startWork", RestMins*60000).Start();
+		SafeCreateTimer("startWork", RestMins*60000);
 		Plugin.KillTimer("takeCoords");
 		Plugin.KillTimer("stopWork");
 		if (HighPing == 1){
-			Plugin.CreateTimer("pingCheck", Time*1000).Start();
+			SafeCreateTimer("pingCheck", Time*1000);
 		}
 	}
 	catch (err) {
@@ -677,11 +692,11 @@ function startWorkCallback() {
 		if (HighPing == 1){
 			Plugin.KillTimer("checkPing");
 		}
-		Plugin.CreateTimer("takeCoords", timer*1000).Start();
+		SafeCreateTimer("takeCoords", timer*1000);
 		for(var pl in Server.Players) {
 			Data.AddTableValue('lastCoords', "last "+pl.Name+" location", pl.Location);
 		}
-		Plugin.CreateTimer("stopWork", WorkMins*60000).Start();
+		SafeCreateTimer("stopWork", WorkMins*60000);
 		Plugin.KillTimer("startWork");
 	}
 	catch (err) {
@@ -738,20 +753,20 @@ function takeCoordsCallback() {
 				}
 				var Warned = Data.GetTableValue('AntiSH', pl.Name);
 				if ((Warned == 1) && (((distance > BanDist) && ((distance < TpDist) && (Tp == 1)) && (Ban == 1)) || ((distance > BanDist) && ((Tp == 0)) && (Ban == 1)))){
-					Server.BroadcastFrom( "[AntiCheat]", "[color#FF0000]"+pl.Name+" was banned (Moved "+distance.toFixed(2)+" meters)");
+					Server.BroadcastFrom( "[AntiCheat]", "[color#FF6666]"+pl.Name+" was banned (Moved "+distance.toFixed(2)+" meters)");
 					pl.MessageFrom("[AntiCheat]", "[color#FF2222]You have been banned.");
 					var LogString = "Moved "+distance.toFixed(2)+"m";
 					banCheater(pl, LogString);
 					continue;
 				}
 				else if ((Warned == 1) && (((distance > KickDist) && ((distance < TpDist) && (Tp == 1)) && (Kick == 1)) || ((distance > KickDist) && ((Tp == 0)) && (Kick == 1)))){
-					Server.BroadcastFrom( "[AntiCheat]", "[color#FF0000]"+pl.Name+" was kicked (Moved "+distance.toFixed(2)+" meters, maybe lagged)");
+					Server.BroadcastFrom( "[AntiCheat]", "[color#FF6666]"+pl.Name+" was kicked (Moved "+distance.toFixed(2)+" meters, maybe lagged)");
 					pl.MessageFrom("[AntiCheat]", "[color#FF2222]You have been kicked");
 					pl.Disconnect();
 					continue;
 				}
 				else if ((Warned == 1) && (((distance > ChatDist) && ((distance < TpDist) && (Tp == 1)) && (Chat == 1)) || ((distance > ChatDist) && ((Tp == 0)) && (Chat == 1)))){
-					Server.BroadcastFrom( "[AntiCheat]", "[color#FF0000]"+pl.Name+ " moved " +distance.toFixed(2)+ " meters!");
+					Server.BroadcastFrom( "[AntiCheat]", "[color#FF6666]"+pl.Name+ " moved " +distance.toFixed(2)+ " meters!");
 				}	
 				else if ((Warned == 1) && (distance < ChatDist)){
 					Data.AddTableValue('AntiSH', pl.Name, 0);
