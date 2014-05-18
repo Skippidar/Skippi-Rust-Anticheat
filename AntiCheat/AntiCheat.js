@@ -5,7 +5,7 @@ If you want - you can rate this plugin on http://gomagma.org
 GitHub - https://github.com/Skippidar/Skippi-Rust-Anticheat
 */
 
-var Version = "4.7.4";
+var Version = "4.7.6";
 var ini = "";
 var Chat = "";
 var Kick = "";
@@ -547,6 +547,18 @@ function On_PlayerDisconnected(Player){
 	}
 	catch (err) {
             ErrorFound(err, "OnPlayerDisconnected");
+    }
+}
+
+function On_BlueprintUse(Player, BPUseEvent){
+	try{
+		if(BPUseEvent.ItemName == "Research Kit 1"){
+			BPUseEvent.Cancel = true;
+			Player.MessageFrom("[AntiCheat]", "[color#FF2222]You can't research Research Kits.");
+		}
+	}
+	catch (err) {
+            ErrorFound(err, "On_BlueprintUse");
     }
 }
 
