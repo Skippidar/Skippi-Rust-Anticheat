@@ -371,10 +371,12 @@ function On_PlayerConnected(Player) {
 		if (AntiSH == ""){
 			configInit();
 		}
+		Data.AddTableValue('disconnected', Player.Name, 0);
 		if (((Player.Name.indexOf('admin') + 1 != 0) || (Player.Name.indexOf('Admin') + 1 != 0)) && (!Player.Admin)){
 			Player.MessageFrom("[AntiCheat]", "[color#FF2222]Please, don't use \"Admin\" in your nickname.");
+			Data.AddTableValue('disconnected', Player.Name, 1);
+			Player.Disconnect();
 		}
-		Data.AddTableValue('disconnected', Player.Name, 0);
 		if (Player.Name.indexOf('=') + 1 != 0){
 			Player.MessageFrom("[AntiCheat]", "[color#FF2222]You have illegal characters in your name. Please, change it.");
 			Data.AddTableValue('disconnected', Player.Name, 1);
