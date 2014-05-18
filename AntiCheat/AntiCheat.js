@@ -64,7 +64,17 @@ configInit();
 function SafeCreateTimer(Name, Time){
 	try {
 		if ((Time < 2000) || (Time == undefined) || (Time == null)){
-			Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Please, report to administration.");
+			if (Name == "startWork"){
+				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Trying to recreate.");
+				startWorkCallback();
+			}
+			else if (Name == "stopWork"){
+				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Trying to recreate.");
+				stopWorkCallback();
+			}
+			else{
+				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Please, report to administration.");
+			}
 			return 1;
 		}
 		else {
@@ -197,15 +207,33 @@ function On_Command(Player, cmd, args) {
 		if (AntiSH == ""){
 			configInit();
 		}
+		if(cmd == "ashstart" && Player.Admin){
+			var inprogress = Data.GetTableValue("Values", "AntiSHWorking");
+			if (inprogress == 1){
+				Player.MessageFrom("[AntiCheat]", "[color#FF6666]AntiSpeedHack is already working!");
+			}
+			else{
+				startWorkCallback();
+			}
+		}
+		if(cmd == "ashpause" && Player.Admin){
+			var inprogress = Data.GetTableValue("Values", "AntiSHWorking");
+			if (inprogress == 0){
+				Player.MessageFrom("[AntiCheat]", "[color#FF6666]AntiSpeedHack is already paused!");
+			}
+			else{
+				stopWorkCallback();
+			}
+		}
 		if(cmd == "banip" && Player.Admin){
 			var pl = Player.Find(args[0]);
 			if(pl.Name == undefined){
 				Player.MessageFrom("[AntiCheat]", "No such player");
 			}
 			else {
-				Player.MessageFrom("[AntiCheat]", "You banned "+pl.Name);
-				Player.MessageFrom("[AntiCheat]", "His IP: "+pl.IP);
-				Player.MessageFrom("[AntiCheat]", "His ID: "+pl.SteamID);
+				Player.MessageFrom("[AntiCheat]", "You banned [color#33AAFF]"+pl.Name);
+				Player.MessageFrom("[AntiCheat]", "His IP: [color#33AAFF]"+pl.IP);
+				Player.MessageFrom("[AntiCheat]", "His ID: [color#33AAFF]"+pl.SteamID);
 				var LogString = "Banned by "+Player.Name;
 				return banCheater(pl, LogString);
 			}
@@ -294,6 +322,7 @@ function On_PluginInit() {
 					Plugin.KillTimer("checkPing");
 				}
 				SafeCreateTimer("takeCoords", timer*1000);
+				Data.AddTableValue('Values', "AntiSHWorking", 1);
 				for(var pl in Server.Players) {
 					Data.AddTableValue('lastCoords', "last "+pl.Name+" location", pl.Location);
 					Data.AddTableValue('AntiSH', pl.Name, 0);
@@ -302,7 +331,8 @@ function On_PluginInit() {
 					}
 				}
 			}
-			else {
+			else {				
+				Data.AddTableValue('Values', "AntiSHWorking", 1);
 				SafeCreateTimer("takeCoords", timer*1000);
 				SafeCreateTimer("stopWork", WorkMins*60000);
 				for(var pl in Server.Players) {
@@ -662,9 +692,10 @@ function stopWorkCallback() {
 		if (AntiSH == ""){
 			configInit();
 		}
+		Data.AddTableValue('Values', "AntiSHWorking", 0);
 		for(var pl in Server.Players) {
 			if (pl.Admin){
-				pl.MessageFrom("[AntiCheat]", "[color#FF2222]⇒ AntiSpeedHack Paused. ⇐");
+				pl.MessageFrom("[AntiCheat]", "[color#FF2222]⇒ AntiSpeedHack Paused. It will start in "+RestMins+"minutes. ⇐");
 			}
 		}
 		SafeCreateTimer("startWork", RestMins*60000);
@@ -683,7 +714,8 @@ function startWorkCallback() {
 	try {
 		if (AntiSH == ""){
 			configInit();
-		}
+		}		
+		Data.AddTableValue('Values', "AntiSHWorking", 1);
 		for(var pl in Server.Players) {
 			if (pl.Admin){
 				pl.MessageFrom("[AntiCheat]", "[color#00BB00]⇒ AntiSpeedHack Started. ⇐");
