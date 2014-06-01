@@ -61,31 +61,6 @@ var MaxPing = "";
 var MaxHeight = "";
 configInit();
 
-function SafeCreateTimer(Name, Time){
-	try {
-		if ((Time < 2000) || (Time == undefined) || (Time == null)){
-			if (Name == "startWork"){
-				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Trying to recreate.");
-				startWorkCallback();
-			}
-			else if (Name == "stopWork"){
-				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Trying to recreate.");
-				stopWorkCallback();
-			}
-			else{
-				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Please, report to administration.");
-			}
-			return 1;
-		}
-		else {
-			Plugin.CreateTimer(Name, Time).Start();
-			return 0;
-		}
-	}
-	catch (err) {
-            ErrorFound(err, "SafeCreateTimer");
-    }
-}
 function configInit(){
 	try {
 		ini = Plugin.GetIni("AntiCheatSettings");
@@ -199,6 +174,32 @@ function banCheater(Player, LogString) {
 	}
 	catch (err) {
             ErrorFound(err, "banCheater");
+    }
+}
+
+function SafeCreateTimer(Name, Time){
+	try {
+		if ((Time < 2000) || (Time == undefined) || (Time == null)){
+			if (Name == "startWork"){
+				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Trying to recreate.");
+				startWorkCallback();
+			}
+			else if (Name == "stopWork"){
+				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Trying to recreate.");
+				stopWorkCallback();
+			}
+			else{
+				Server.BroadcastFrom("[AntiCheat]", "Failed to create timer named "+Name+". Please, report to administration.");
+			}
+			return 1;
+		}
+		else {
+			Plugin.CreateTimer(Name, Time).Start();
+			return 0;
+		}
+	}
+	catch (err) {
+            ErrorFound(err, "SafeCreateTimer");
     }
 }
 
@@ -550,18 +551,6 @@ function On_PlayerDisconnected(Player){
     }
 }
 
-function On_BlueprintUse(Player, BPUseEvent){
-	try{
-		if(BPUseEvent.ItemName == "Research Kit 1"){
-			BPUseEvent.Cancel = true;
-			Player.MessageFrom("[AntiCheat]", "[color#FF2222]You can't research Research Kits.");
-		}
-	}
-	catch (err) {
-            ErrorFound(err, "On_BlueprintUse");
-    }
-}
-
 function On_PlayerSpawned(Player, SpawnEvent){
 	try {
 		if (AntiSH == ""){
@@ -633,7 +622,7 @@ function On_PlayerKilled(DeathEvent){
 			//}
 			Server.BroadcastFrom( "[AntiCheat]", "[color#D02090]"+Killer+ " ☠ " +Victim+" from " +Distance+ "m with "+Weapon+" ("+DamageType+" ⇒ "+Damage+"HP)");
 		}
-		if ((Weapon != undefined) && (AntiAim == 1) && (Distance >= MaxDist) && ((BodyPart == "9") || (HsOnly == 0)) && ((DamageType=="Bullet") || (DamageType=="Melee"))){ 
+		if (((Weapon != undefined) || (Damage > 70)) && (AntiAim == 1) && (Distance >= MaxDist) && ((BodyPart == "9") || (HsOnly == 0)) && ((DamageType=="Bullet") || (DamageType=="Melee"))){ 
 			for (var i = 1; i <= CountAim; i++){
 				var j = i + 1;
 				var Next = Data.GetTableValue('lastKillTo', j+"part "+Killer+" damaged");
