@@ -643,7 +643,7 @@ function On_PlayerKilled(DeathEvent){
 			}
 		}
 		var WeaponDistance = ini.GetSetting("Ranges",Weapon);
-		if (((Distance >= MaxKillDist) || ((WeaponDistance != undefined) && (Distance > WeaponDistance))) && (Weapon != undefined)){
+		if (((Distance >= MaxKillDist) || ((WeaponDistance != undefined) && (Distance > WeaponDistance))) && ((Weapon != undefined) || (Damage > 70))){
 			var LogString = "Made kill from "+Distance+"m ("+Weapon+")";
 			Server.BroadcastFrom( "[AntiCheat]", "[color#FF6666]"+Killer+" killed "+Victim+" from "+Distance+"m ("+Weapon+"). Banned.");
 			return banCheater(DeathEvent.Attacker, LogString);
