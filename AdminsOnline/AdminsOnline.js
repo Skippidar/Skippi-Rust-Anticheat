@@ -1,10 +1,10 @@
-//requires Lists
+//requires Lists plugin
 
 function On_PluginInit() {
 	var listinfo = {
 		TableName: "adminlist",
 		Info: "[color#00FF00]Admins online:",
-		EmptyInfo: "No admins online.",
+		EmptyInfo: "[color#FF0000]No admins online.",
 		InOneString: 5
 	}
 	Data.AddTableValue("commands", "admins", listinfo);
